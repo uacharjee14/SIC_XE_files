@@ -1,0 +1,57 @@
+#include <stdio.h>
+void copy(FILE*, FILE*);
+void rem_copy(FILE*, FILE*, int);
+ int main(){
+     int line=0;
+     int i;
+     int val;
+     FILE* mem = NULL;
+     FILE* tmp = NULL;
+     mem = fopen("mem.txt", "r+");
+     tmp = fopen("tmp.txt", "w+");
+     copy(mem, tmp);
+     char c;
+     printf("Enter address: ");
+     int add = 0;
+     scanf("%d", &add);
+     rewind(tmp);
+     rewind(mem);
+     while(!(feof(tmp))){
+         //how do i know which line?
+         fscanf(tmp, "%d %d", &i, &val);
+         printf("%d %d\n", i, val);
+         if(i==add)
+         break;
+         line++;
+     }
+     printf("line: %d", line);
+     if(feof(tmp))
+     return 1;
+     rewind(tmp);
+     rewind(mem);
+     rem_copy(tmp, mem, line);
+     fclose(mem);
+     fclose(tmp);
+     remove("tmp.txt");
+     return 0;
+}
+void copy(FILE *source, FILE *target){
+    char c;
+ while((c = getc(source))!=-1){
+  putc(c,target);
+ }
+ }
+void rem_copy(FILE *source, FILE *target, int line){
+    int i = 0;
+    char c;
+    while((c = getc(source))!=-1){
+        if(c=='\n'){
+            i++;
+        }
+        if(i != line){
+            putc(c,target);
+        }
+    }
+}
+    
+

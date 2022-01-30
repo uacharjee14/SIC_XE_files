@@ -1,0 +1,22 @@
+#include <stdio.h>
+int main(){
+    FILE *mem;
+    FILE *tmp;
+    mem = fopen("mem.txt", "r");
+    tmp = fopen("tmp.txt", "w");
+    int line = 4;
+    char c;
+    int i=1;
+    c = getc(mem);
+    while(c != -1){
+        if(c =='\n')
+        i++;
+        if(i!=4){
+        putc(c, tmp);
+        }
+        c = getc(mem);
+    }
+    fclose(mem);
+    fclose(tmp);
+    return 0;
+}

@@ -1,0 +1,26 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+int main(){
+    char inst[5];
+    printf("Enter instruction below: \n");
+    int r1=-1;
+    int r2=-1;
+    int disp= 0;
+    int format=0;
+    scanf("%s", inst);
+   if(stdin!=NULL){
+        scanf("%d", &r1);
+        
+    }
+    if(stdin!=NULL){
+        scanf("%d", &r2);
+        
+    }
+    if(r2==-1){
+        disp = r1;
+        r1= -1;
+    }
+    
+        printf("command: %s\nr1: %d\nr2: %d\ndisp: %d\n", inst, r1, r2, disp);
+}

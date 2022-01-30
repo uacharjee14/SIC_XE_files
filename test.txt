@@ -1,0 +1,14 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+int main(){
+char word[10];
+printf("Enter a word to search: ");
+scanf("%[^\n]s", word);
+printf("You've entered: %s", word); 
+
+FILE *file;
+file = fopen("filename.txt", "r");
+
+}

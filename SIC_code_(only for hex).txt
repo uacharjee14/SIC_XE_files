@@ -1,0 +1,32 @@
+#include <stdio.h>
+#include <string.h>
+
+int main(){
+char word[6];//to store user instruction
+int m;// memory
+int opcode;//to accept opcode from file
+char inst[6];//to accept instruction name from file
+printf("Enter instruction: ");//input
+scanf("%s %X", word,&m);
+if(m<0 || m>32767){//checking if address is in bounds (<2^15)
+printf("Address out of bound!");
+return 1;}
+FILE *fptr;
+fptr = fopen("map.txt", "r");
+if(fptr == NULL){
+    printf("No map found!");
+    return 1;
+}
+while(fptr != EOF){
+fscanf(fptr,"%s %X", inst, &opcode);//reading instruction name and opcode from file
+if(strcmp(inst, word)==0)// checking for a match
+break;
+}
+if(feof(fptr)){//handling invalid command
+printf("Invalid Command!");
+return 1;
+}
+fclose(fptr);
+printf("HEX CODE: %X%X", opcode, m); //output (just the hex code)
+return 0;
+}

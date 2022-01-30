@@ -1,0 +1,58 @@
+#include <stdio.h>
+void read_data(FILE*, int);
+void write_data(FILE*, int, int);
+
+int main(){
+int add;
+int data;
+FILE *fp;
+fp = fopen("memory.txt", "w+");
+printf("enter r to read from memory and w to write");
+char c = getchar();
+switch(c){
+case 'r': 
+	printf("enter location");
+	scanf("%d %d", &add);
+	read_data(fp,add);
+	break;
+case 'w':
+	printf("enter data and location");
+	scanf("%d %d", &add, &data);
+	write_data(fp,add, data);
+	break;
+deafult:
+	printf("Invalid option!");
+	return 1;
+		
+}
+fclose(fp); 
+return 0;
+}
+
+void read_data(FILE* fptr, int addr){
+int a, d;
+while(fgets(fptr)!='\0'){
+fscanf(fptr, "%d %d", &a, &d);
+if(a==addr){
+ printf("Value: ", d);
+ break;
+}
+}
+if(feof(fptr)){
+printf("No data found");
+}
+}
+
+void write_data(FILE *fptr, int addr, int data){
+int a, d;
+while(fgets(fptr) != '\0'){
+fscanf(fptr, "%d %d", &a, &d);
+if(a == addr){
+ //rewind?
+ fprintf(fptr, "%d %d", addr, data);
+}
+}
+if(feof(fptr)){
+fprintf(fptr, "%d %d", addr, data);
+}
+}
