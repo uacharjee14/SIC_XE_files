@@ -1,0 +1,98 @@
+comma_sep(operand, &xbpe);//THIS WILL CHANGE... COMMA MIGHT BE FOLLOWED BY OPERANDS LIKE REGISTER NUMBERS
+       
+        printf("%s %s %s\n", label, opcode, operand);
+        int format;
+        int increment = 0;
+        if(opcode[0]=='+'){
+            xbpe+=4096;
+            increment = 1;
+            strcpy(opcode, &opcode[1]);
+        }
+        format = search2(optab, opcode);
+        op = search_opcode(optab, opcode);//THIS WILL CHANGE DUE TO FORMAT
+
+        if(operand[0]=='#'){//GUARANTEED PROBLEMS HERE BRO!
+            ni = 1;
+            strcpy(operand, &operand[1]);
+        }
+        else if(operand[0]=='@'){
+            ni = 2;
+            strcpy(operand, &operand[1]);
+        }
+        else{
+            ni = 3;
+        }
+        if(op!=-1){
+            //if operand exists  and is non numeric then look it up in symtab
+            if(str_check(operand)==0){
+                addr = search(symtab, operand);
+                if(addr == -1){
+                    printf("operand not declared!\n");
+                    addr =0;
+                    //return 1;
+                }
+             addr = search(symtab, operand);//CHECK IF PC, BASE THEN EXTENDED
+             pc+= format+increment;//incrementing pc for pc relative.
+             //if increment == 1 then don't do this
+             //if addr-pc is within bounds then ok else try base relative if base exists else error
+             //sometimes operand may not exist in that case operand is " "
+             if(strcmp(operand, " ")==0)
+             addr = 0;
+             if(increment == 1)
+            fprintf(output,"%02X%06X\n", (op+ni), (addr+xbpe*256));//THIS WILL CHANGE ADDRESS FORMAT MODIFCATION
+            else{
+             if(abs(addr-pc)<1000){//range is wrong!
+             xbpe += 8192; //adding p bit
+             addr = addr-pc;//NEEDS VERIFICATION HERE
+             }
+             else if(base >=0 && abs(addr-base)<1000 ){
+             xbpe += 16384; //adding b bit
+             addr = addr -base;//HERE ALSO
+             }
+             else{
+                 printf("Address cannot be reached with relative addressing");
+                 return -1;
+             }
+             fprintf(output,"%02X%04X\n", (op+ni), (addr+xbpe));//IF ALL GOES FINE THIS SHOULD WORK
+            }
+            }
+           else if(strcmp(opcode,"BYTE")==0){
+            //put the operand as it is ASCII in hex
+            //reads the operand and modifies it to the correct format to be passed into ascii
+            int hex = read_byte(operand);// 2 for hex, 1 for char array
+            if (hex == 1){
+            ascii(operand);
+            fprintf(output,"%s\n", operand);
+            }
+            else
+            fprintf(output, "%s\n", operand);
+
+        }
+        else if(strcmp(opcode,"WORD")==0){
+            //put the operand as it is 6digit hexadecimal padded with zeros if required
+        fprintf(output,"%06X\n", atoi(operand));
+        }
+        else if(strcmp(opcode,"START")==0){
+            //put program name (label), length of code, address
+            pc = operand;
+            fprintf(output, "%s %d %s\n",label, length, operand);
+        }
+        else if(strcmp(opcode,"END")==0){
+            //put an appropriate message and end the program
+            printf("Program ended!\n");
+            return 0;
+        }
+        else if(strcmp(opcode, "BASE")==0){
+            printf("BASE found!\n");
+         base = search(symtab, operand);
+         if(base == -1){
+             printf("Invalid operand for base\n");
+             return -1;
+         }
+        }//ADDED BASE
+        else if((strcmp(opcode,"RESW")!=0) && (strcmp(opcode,"RESB")!=0) ){
+            //return error as opcode not found
+        printf("Error: opcode not found\n");
+        return 2;
+        }//ADD BASE HERE- SO THAT THE VARIABLE BASE HAS SOMETHING
+        //SEARCH SYMTAB FOR BASE OPERAND AND FIX THE VALUE FOR LATER USE
